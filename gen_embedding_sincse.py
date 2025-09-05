@@ -76,7 +76,7 @@ for i in trange(len(text)//args.batch_size + 1):
 embedding = np.concatenate(embedding, axis = 0)
 print(embedding.shape)
 
-with open(f"{args.dataset}/embedding_{model_name}_simcse_{args.type}.pkl", 'wb') as handle:
+with open(f"{args.dataset}/embedding_sincse_simcse_{args.type}.pkl", 'wb') as handle:
     pickle.dump(embedding, handle, protocol=4)
 
 
