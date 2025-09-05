@@ -90,7 +90,7 @@ def load_data(dataset = 'IMDB', embedding_model = 'roberta-base', template_id = 
     path = f'{dataset}/'
     with open(path + f'embedding_sincse_simcse_proc_dev_data.pkl', 'rb') as f:
         train_emb = pickle.load(f)    
-    train_prompt_pred = np.load(path + f"pred_unlabeled_llama-8b.npy")
+    train_prompt_pred = np.load(path + f"pred_unlabeled_llama-8b.npy",allow_pickle=True)
     # train_label = np.load(path + "pred_labels.npy") # actually unused
 
     # assert len(test_label) == test_emb.shape[0]
