@@ -88,7 +88,7 @@ def patron(unlabel_value, unlabeled_feat, n_sample, k = 50, rho = 0.1, beta = 0.
 ''' loading embedding and predictions '''
 def load_data(dataset = 'IMDB', embedding_model = 'roberta-base', template_id = 0):
     path = f'{dataset}/'
-    with open(path + f'embedding_sincse_sincse_proc_dev_data.pkl', 'rb') as f:
+    with open(path + f'embedding_sincse_simcse_proc_dev_data.pkl', 'rb') as f:
         train_emb = pickle.load(f)    
     train_prompt_pred = np.load(path + f"pred_unlabeled_llama-8b.npy")
     # train_label = np.load(path + "pred_labels.npy") # actually unused
