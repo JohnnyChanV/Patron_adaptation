@@ -182,7 +182,6 @@ if __name__ == '__main__':
     Suppose all the data is in the folder ./X, where X = {AGNews, IMDB, TREC, Yahoo, Yelp-full}
     '''
     args = get_arguments()
-
     prop = args.prop
     k = args.k
     rho = args.rho
