@@ -198,10 +198,10 @@ if __name__ == '__main__':
     entropy = np.sum(-np.log(train_prompt_pred + 1e-12) * train_prompt_pred, axis = -1)
 
     ##########
-    local_uncertainty = entropy.flatten()
+    local_uncertainty = entropy.flatten() * 0
 
     sample_idxs = patron(local_uncertainty, train_emb, n_sample = n_sample, k = k, rho = rho, beta = beta, mu = mu, gamma = gamma,  refine_round = 1, prop = prop)
     for round, sample_idx in enumerate(sample_idxs):
-        with open(f"{args.dataset}/train_idx_llama-3b-{round}_rho{args.rho}_gamma{gamma}_beta{beta}_mu{mu}_{n_sample}.json", 'w') as f: ##TODO
+        with open(f"{args.dataset}/kmeans-train_idx_llama-3b-{round}_rho{args.rho}_gamma{gamma}_beta{beta}_mu{mu}_{n_sample}.json", 'w') as f: ##TODO
             json.dump(sample_idx, f)
             
