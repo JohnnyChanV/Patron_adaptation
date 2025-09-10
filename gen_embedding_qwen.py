@@ -1,90 +1,67 @@
-import torch
-from scipy.spatial.distance import cosine
-from transformers import AutoModel, AutoTokenizer
 import argparse
 import json
-from tqdm import trange
-import numpy as np
 import pickle
+import numpy as np
+from tqdm import trange
+from sentence_transformers import SentenceTransformer
 
 
-# Tokenize input texts
 def get_arguments():
     parser = argparse.ArgumentParser()
 
-    # Required parameters
     parser.add_argument(
         "--dataset",
         default='pickles',
         type=str,
-        required=True,
+        # required=True,
         help="The input data dir. Should contain the cached passage and query files",
     )
     parser.add_argument(
         "--type",
         default='proc_dev_data',
         type=str,
-        help="The input data dir. Should contain the cached passage and query files",
+        help="The input data file type (e.g. proc_dev_data.json)",
     )
-
     parser.add_argument(
         "--batch_size",
         default=64,
         type=int,
-        help="The input data dir. Should contain the cached passage and query files",
-    )
-
-    parser.add_argument(
-        "--gpuid",
-        default=0,
-        type=int,
-        help="The input data dir. Should contain the cached passage and query files",
+        help="Batch size for encoding",
     )
     args = parser.parse_args()
     return args
 
 
-args = get_arguments()
-text = []
-label = []
-model_name = "Qwen/Qwen3-Embedding-4B"
+def main():
+    args = get_arguments()
+    text, label = [], []
 
-text_a = []
-text_b = []
-with open(f"{args.dataset}/{args.type}.json", 'r') as f:
-    for lines in f:
-        lines = json.loads(lines)
-        text.append(lines["text"])
-        label.append(lines["_id"])
-    # print number of unlabeled data/classes
-    print(len(text), len(label))
+    with open(f"{args.dataset}/{args.type}.json", "r") as f:
+        for line in f:
+            data = json.loads(line)
+            text.append(data["text"])
+            label.append(data["_id"])
 
-# Import our models. The package will take care of downloading the models automatically
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModel.from_pretrained(model_name,device='auto')
+    print(f"Loaded {len(text)} samples.")
 
-# model = model.to(f"cuda:{args.gpuid}")
+    # Sentence-Transformers 模型
+    model_name = "Qwen/Qwen3-Embedding-4B"
+    model = SentenceTransformer(model_name, device="cuda" if torch.cuda.is_available() else "cpu")
 
-embedding = []
+    embeddings = []
+    num_iter = (len(text) + args.batch_size - 1) // args.batch_size
 
-num_iter = len(text) // args.batch_size if len(text) % args.batch_size == 0 else (len(text) // args.batch_size + 1)
-for i in trange(len(text) // args.batch_size + 1):
-    # inputs = tokenizer(text[i * args.batch_size:(i + 1) * args.batch_size], padding=True, truncation=True,
-    #                    return_tensors="pt").to(f"cuda:{args.gpuid}")
-    # Get the embeddings
-    with torch.no_grad():
-        embeddings = model.encode(text[i * args.batch_size:(i + 1) * args.batch_size])
-        # embeddings = model(**inputs, output_hidden_states=True, return_dict=True).pooler_output
-        embedding.append(embeddings.cpu().numpy())
+    for i in trange(num_iter):
+        batch_texts = text[i * args.batch_size:(i + 1) * args.batch_size]
+        batch_embeddings = model.encode(batch_texts, batch_size=args.batch_size, show_progress_bar=False)
+        embeddings.append(batch_embeddings)
 
-embedding = np.concatenate(embedding, axis=0)
-print(embedding.shape)
+    embeddings = np.concatenate(embeddings, axis=0)
+    print("Embedding shape:", embeddings.shape)
 
-with open(f"{args.dataset}/embedding_qwen_{args.type}.pkl", 'wb') as handle:
-    pickle.dump(embedding, handle, protocol=4)
+    with open(f"{args.dataset}/embedding_qwen_{args.type}.pkl", "wb") as handle:
+        pickle.dump(embeddings, handle, protocol=4)
 
 
-
-
-
-
+if __name__ == "__main__":
+    main()
