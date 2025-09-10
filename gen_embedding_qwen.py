@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 from tqdm import trange
 from sentence_transformers import SentenceTransformer
-
+import torch
 
 def get_arguments():
     parser = argparse.ArgumentParser()
