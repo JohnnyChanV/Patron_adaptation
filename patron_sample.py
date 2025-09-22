@@ -90,7 +90,7 @@ def load_data(dataset = 'IMDB', embedding_model = 'roberta-base', template_id = 
     path = f'{dataset}/'
     with open(path + f'embedding_sincse_simcse_proc_dev_data.pkl', 'rb') as f:
         train_emb = pickle.load(f)    
-    train_prompt_pred = np.load(path + f"pred_unlabeled_llama-3b.npy",allow_pickle=True) ##TODO
+    train_prompt_pred = np.load(path + f"pred_unlabeled_{args.target_model}.npy",allow_pickle=True) ##TODO
     # train_label = np.load(path + "pred_labels.npy") # actually unused
 
     # assert len(test_label) == test_emb.shape[0]
@@ -114,6 +114,13 @@ def get_arguments():
     parser.add_argument(
         "--model",
         default='simcse',
+        type=str,
+        help="The model used for embedding",
+    )
+
+    parser.add_argument(
+        "--target_model",
+        default='Qwen2.5-3B',
         type=str,
         help="The model used for embedding",
     )
@@ -201,6 +208,6 @@ if __name__ == '__main__':
 
     sample_idxs = patron(local_uncertainty, train_emb, n_sample = n_sample, k = k, rho = rho, beta = beta, mu = mu, gamma = gamma,  refine_round = 1, prop = prop)
     for round, sample_idx in enumerate(sample_idxs):
-        with open(f"{args.dataset}/kmeans-train_idx_llama-3b-{round}_rho{args.rho}_gamma{gamma}_beta{beta}_mu{mu}_{n_sample}.json", 'w') as f: ##TODO
+        with open(f"{args.dataset}/kmeans-train_idx_{args.target_model}-{round}_rho{args.rho}_gamma{gamma}_beta{beta}_mu{mu}_{n_sample}.json", 'w') as f: ##TODO
             json.dump(sample_idx, f)
             
