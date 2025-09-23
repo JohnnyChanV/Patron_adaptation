@@ -11,7 +11,7 @@ def get_arguments():
 
     parser.add_argument(
         "--dataset",
-        default='pickles',
+        default='TREC',
         type=str,
         # required=True,
         help="The input data dir. Should contain the cached passage and query files",
