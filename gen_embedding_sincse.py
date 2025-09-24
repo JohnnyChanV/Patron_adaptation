@@ -13,14 +13,14 @@ def get_arguments():
     # Required parameters
     parser.add_argument(
         "--dataset",
-        default='agnews',
+        default='TREC',
         type=str,
         required=True,
         help="The input data dir. Should contain the cached passage and query files",
     )
     parser.add_argument(
         "--type",
-        default='unlabeled',
+        default='proc_dev_data',
         type=str,
         help="The input data dir. Should contain the cached passage and query files",
     )
