@@ -208,6 +208,6 @@ if __name__ == '__main__':
 
     sample_idxs = patron(local_uncertainty, train_emb, n_sample = n_sample, k = k, rho = rho, beta = beta, mu = mu, gamma = gamma,  refine_round = 1, prop = prop)
     for round, sample_idx in enumerate(sample_idxs):
-        with open(f"{args.dataset}/kmeans-train_idx_{args.target_model}-{round}_rho{args.rho}_gamma{gamma}_beta{beta}_mu{mu}_{n_sample}.json", 'w') as f: ##TODO
+        with open(f"{args.dataset}/v1_kmeans-train_idx_{args.target_model}-{round}_rho{args.rho}_gamma{gamma}_beta{beta}_mu{mu}_{n_sample}.json", 'w') as f: ##TODO
             json.dump(sample_idx, f)
             
