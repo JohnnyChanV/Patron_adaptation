@@ -6,7 +6,7 @@ git pull
 
 #!/bin/bash
 
-models=("Llama-3.2-3B" "Llama-3.1-8B")
+models=("Qwen3-8B" "Qwen3-4B")
 samples=(5 10 20 30)
 
 for model in "${models[@]}"; do
